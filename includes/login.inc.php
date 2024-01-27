@@ -29,12 +29,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         require_once "config_session.inc.php";
 
         if ($errors) {
-            $_SESSION["error_signup"] = $errors;
-            header ("Location: ../signup.php");
+            $_SESSION["error_login"] = $errors;
+            header ("Location: ../index.php");
 
             die();
         }
+
+        $newSessionId = session_create_id();
+        $sessionId = $newSessionId . "_" . $result;
+        session_id($sessionId);
+
+        $_SESSION["user_id"] = $result["id"];
+        $_SESSION["username"] = htmlspecialchars($result["username"]);
         
+        $_SESSION["last_regeneration"] = time();
+
+        header ("Location: ../content.php?login=success");
+        $pdo = null;
+        $stmt = null;
+
+        die();
 
     } catch (PDOException $e) {
         die("Query failed: " . $e->getMessage());
